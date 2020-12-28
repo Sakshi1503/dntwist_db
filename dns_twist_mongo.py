@@ -15,7 +15,7 @@ os.system(command)
 with open("file.json", "r") as read_file:
     data = json.load(read_file)
 
-#creating the dcit to be inserted into collection as per the requirement
+#creating the dict to be inserted into collection as per the requirement
 for element in data:
 	    element.pop('dns-mx', None)
 	    element.pop('dns-ns', None)
