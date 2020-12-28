@@ -4,16 +4,18 @@ import json
 import connection
 from dns_twist_search_input import search_string
 
+#connect with collection
 dns_from_dnstwist = connection.mydb["dns_from_dnstwist"]
 
+#run the command and save it into json
 command = "dnstwist --format json "+ search_string +" | jq > file.json"
-print(command)
 os.system(command)
 
-
+#reading the json file
 with open("file.json", "r") as read_file:
     data = json.load(read_file)
 
+#creating the dcit to be inserted into collection as per the requirement
 for element in data:
 	    element.pop('dns-mx', None)
 	    element.pop('dns-ns', None)
@@ -23,7 +25,8 @@ for element in data:
 	    else:
 		    element.update({"is-avail":True}) 
 
-
+#insert into database
 x = dns_from_dnstwist.insert_many(data)
 
+#closing the connectioin
 connection.connect_close()
