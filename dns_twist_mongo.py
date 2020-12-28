@@ -3,8 +3,7 @@ import dnstwist
 import json
 import connection
 
-connection.connect()
-mycol = mydb["dns_from_dnstwist"]
+mycol = connection.mydb["dns_from_dnstwist"]
 
 command = "dnstwist --format json patel.com | jq > file.json"
 os.system(command)
