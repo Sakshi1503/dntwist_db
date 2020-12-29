@@ -3,30 +3,36 @@ import dnstwist
 import json
 import connection
 from dns_twist_search_input import search_string
+import requests
 
-#connect with collection
+# connect with collection
 dns_from_dnstwist = connection.mydb["dns_from_dnstwist"]
 
-#run the command and save it into json
-command = "dnstwist --format json "+ search_string +" | jq > file.json"
+# run the command and save it into json
+command = "dnstwist --format json " + search_string + " | jq > file.json"
 os.system(command)
 
-#reading the json file
+# reading the json file
 with open("file.json", "r") as read_file:
     data = json.load(read_file)
 
-#creating the dict to be inserted into collection as per the requirement
+# creating the dict to be inserted into collection as per the requirement
 for element in data:
-	    element.pop('dns-mx', None)
-	    element.pop('dns-ns', None)
-	    element.pop('fuzzer', None)
-	    if 'dns-a' in element:
-		    element.update({"is-avail":False})
-	    else:
-		    element.update({"is-avail":True}) 
+    element.pop('dns-mx', None)
+    element.pop('dns-ns', None)
+    element.pop('fuzzer', None)
+    if 'dns-a' in element:
+        element.update({"is-avail": False})
+        #extract the location of the IP address from IPSTACK API
+        for x in element['dns-a']:
+            element.update({"location": json.loads(requests.get(
+                'http://api.ipstack.com/' + x + '?access_key=027ce8919364c2616e482ab0e9a23e55').content.decode(
+                'utf-8'))})
+    else:
+        element.update({"is-avail": True})
 
-#insert into database
+# insert into database
 x = dns_from_dnstwist.insert_many(data)
 
-#closing the connectioin
+# closing the connection
 connection.connect_close()
