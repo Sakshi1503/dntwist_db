@@ -30,6 +30,7 @@ for element in data:
                 'utf-8'))})
     else:
         element.update({"is-avail": True})
+    element["ip-address"] = element.pop('dns-a', None)
 
 # insert into database
 x = dns_from_dnstwist.insert_many(data)
