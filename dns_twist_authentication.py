@@ -17,4 +17,4 @@ else:
     print("Not Authenticated")
 
 #closing the connection
-connection.connect_close
+connection.connect_close()

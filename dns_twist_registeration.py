@@ -17,7 +17,7 @@ salt = bcrypt.gensalt()
 hashed = bcrypt.hashpw(password, salt)
 register['password'] = hashed
 register["created_on"] = datetime.datetime.now()
-register["lasatest_login_time"] = datetime.datetime.now()
+register["latest_login_time"] = datetime.datetime.now()
 
 #using the collection 'user'
 register_input = connection.mydb["user"]

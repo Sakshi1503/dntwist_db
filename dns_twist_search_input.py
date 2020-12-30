@@ -13,4 +13,5 @@ search["created_on"] = ct
 search_input = connection.mydb["search_input"]
 x = search_input.insert_one(search)
 
+#closing the connection
 connection.connect_close()

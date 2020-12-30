@@ -24,9 +24,9 @@ for element in data:
     if 'dns-a' in element:
         element.update({"is-avail": False})
         #extract the location of the IP address from IPSTACK API
-        for x in element['dns-a']:
+        for ip_address in element['dns-a']:
             element.update({"location": json.loads(requests.get(
-                'http://api.ipstack.com/' + x + '?access_key=027ce8919364c2616e482ab0e9a23e55').content.decode(
+                'http://api.ipstack.com/' + ip_address + '?access_key=027ce8919364c2616e482ab0e9a23e55').content.decode(
                 'utf-8'))})
     else:
         element.update({"is-avail": True})
