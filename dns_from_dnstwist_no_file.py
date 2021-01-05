@@ -3,8 +3,9 @@ import dnstwist
 import json
 import connection
 import requests
+import dns.resolver
 
-def dns():
+def dnsTwist():
     from dns_twist_search_input import search_string
     # connect with collection
     dns_from_dnstwist = connection.mydb["dns_from_dnstwist"]
@@ -30,9 +31,17 @@ def dns():
                 element.update({"location": json.loads(requests.get(
                     'http://api.ipstack.com/' + ip_address + '?access_key=027ce8919364c2616e482ab0e9a23e55').content.decode(
                     'utf-8'))})
+                #adding text record using dns.resolver
+                try:
+                    answers = dns.resolver.resolve(element['domain-name'], 'TXT')
+                except:
+                    element.update({"text-record": None})
+                else:
+                    element.update({"text-record":[txt_string.decode('utf-8') for rdata in answers for txt_string in rdata.strings]})
         else:
             element.update({"registered?": True})
         element["ip-address"] = element.pop('dns-a', None)
+
 
     # insert into database
     x = dns_from_dnstwist.insert_many(data)
