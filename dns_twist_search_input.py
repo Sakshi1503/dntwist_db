@@ -10,7 +10,7 @@ search["input_text"] = search_string
 search["created_on"] = ct
 
 #insert the search into the database
-search_input = connection.mydb["search_input"]
+search_input = connection.mydb["searchInput"]
 x = search_input.insert_one(search)
 
 #closing the connection
