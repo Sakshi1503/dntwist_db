@@ -19,7 +19,7 @@ def dnsTwist(search_string):
     return data
 
 #######################################################################   CREATING A COLLECTION   ################################################################
-def createCollection(data):
+def createCollection(data, search_string):
     # creating the dict to be inserted into collection as per the requirement
     for element in data:
         element.pop('dns-mx', None)
@@ -38,6 +38,7 @@ def createCollection(data):
             element.update({"registered?": False})
             
         element["ip-address"] = element.pop('dns-a', None)
+        element.update({"searched-input" : search_string})
     return data
 
 ######################################################################   IP STACK   ################################################################################

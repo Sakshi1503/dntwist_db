@@ -15,16 +15,35 @@ if bcrypt.checkpw(password,data['password']):
     print("Authenticated")
     
     import dns_from_dnstwist_no_file as dns
-    from dns_twist_search_input import search_string
-    jsonObj = dns.dnsTwist(search_string)
-    collection = dns.createCollection(jsonObj)
-    
-    # connect with collection
-    dns_from_dnstwist = connection.mydb["dnsFromDnstwist"]
-    
-    # insert into database
-    x = connection.mydb.dnsFromDnstwist.insert_many(collection)
-    
+    from dns_twist_search_input import search_string, search
+    searchInputList = list(connection.mydb.searchInput.distinct('input_text'))
+
+##    i = 0
+
+    #Extract the data from the database if already searched before-hand
+    if search_string in searchInputList:
+        x = connection.mydb.dnsFromDnstwist.find({"searched-input" : search_string})
+        connection.mydb.searchInput.update_one({"input_text" : search_string},{"$push":{"created_on": str(datetime.datetime.now())}},upsert=True)
+##        for j in x:
+##            i += 1
+##            print(j,i)
+            
+    else:
+
+        #insert the search into the database
+        search_input = connection.mydb["searchInput"]
+        x = search_input.insert_one(search)
+
+        #Using the DnsTwist API
+        jsonObj = dns.dnsTwist(search_string)
+        collection = dns.createCollection(jsonObj, search_string)
+        
+        # connect with collection
+        dns_from_dnstwist = connection.mydb["dnsFromDnstwist"]
+        
+        # insert into database
+        x = connection.mydb.dnsFromDnstwist.insert_many(collection)
+        
 else:
     print("Not Authenticated")
 

@@ -7,11 +7,7 @@ ct = datetime.datetime.now()
 
 search = {}
 search["input_text"] = search_string
-search["created_on"] = ct
-
-#insert the search into the database
-search_input = connection.mydb["searchInput"]
-x = search_input.insert_one(search)
+search["created_on"] = [str(ct)]
 
 #closing the connection
 connection.connect_close()
